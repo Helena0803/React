@@ -5,7 +5,7 @@ import {ReactComponent as Reg} from './images/login.svg';
 import IconBasket from '../Card/Basket';
 import { useEffect, useState } from 'react';
 
-export const Header = ({setSearchQuery, searchQuery, parentCounter =0 }) => {
+export const Header = ({setSearchQuery, searchQuery, parentCounter =0 , user}) => {
   const [state, setState] = useState();
   const [counter, setCounter] = useState(parentCounter);
 
@@ -44,6 +44,10 @@ export const Header = ({setSearchQuery, searchQuery, parentCounter =0 }) => {
                 <IconBasket count={counter} />   
               </div>           
             </div>
+            <div>
+          <span>{user.name}</span>
+          <span>{user.about}</span>
+        </div>
           </div>
         </div>
       </div>
