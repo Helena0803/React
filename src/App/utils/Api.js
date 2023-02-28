@@ -2,10 +2,11 @@ const config = {
   baseUrl:'https://api.react-learning.ru',
   headers: {
     'content-type': 'application/json',
-    Authorization:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjJmOTk5MmFlNWM0MGMxMGMxMWRmZTQiLCJpYXQiOjE2NDcyODY2ODEsImV4cCI6MTY3ODgyMjY4MX0.WHKXAErKZtY445yXecOFZsx981MuXicJti-okSY-tac',
-   
+    Authorization:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2U4ZWMzNDU5Yjk4YjAzOGY3N2I1MzMiLCJncm91cCI6Imdyb3VwLTEwIiwiaWF0IjoxNjc2MjA5Mjg0LCJleHAiOjE3MDc3NDUyODR9.ajfNfKbFj5QlW92hnw9YuyopigJsUnYshqya9m1ENcA',
+    // Authorization:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjJmOTk5MmFlNWM0MGMxMGMxMWRmZTQiLCJpYXQiOjE2NDcyODY2ODEsImV4cCI6MTY3ODgyMjY4MX0.WHKXAErKZtY445yXecOFZsx981MuXicJti-okSY-tac',
   },
 };
+
 const onResponse = (res) => {
   return res.ok ? res.json() : Promise.reject('Error')
 }
@@ -15,11 +16,12 @@ class Api {
     this._baseUrl = baseUrl;
     this._headers = headers;
   }
-getProductList() {
-  return fetch(`${this._baseUrl}/products`,{
+getProductList(page = 2) {
+  return fetch(`${this._baseUrl}/products?page=${page}`, {
     headers: this._headers,
   }).then(onResponse);
 }
+
 getUserInfo() {
   return fetch(`${this._baseUrl}/users/me`,{
     headers: this._headers,
@@ -30,7 +32,7 @@ searchProducts(query) {
     headers: this._headers,
   }).then(onResponse);
 }
-changeLikeProductStatus(productId,like) {
+changeLikeProductsStatus(productId,like) {
   return fetch(`${this._baseUrl}/products/likes/${productId}`,{
     headers: this._headers,
     method: like ? 'PUT' : 'DELETE'
@@ -49,24 +51,42 @@ addLike(productId) {
     method: 'PUT'
   }).then(onResponse); 
 }
-createNewProduct() {
-  return fetch(${this._baseUrl}/products,{
+addNewProduct(data) {
+  return fetch(`${this._baseUrl}/products`,{
     headers: this._headers,
     method: 'POST',
-    body: 	{
-      "name": "Букет из роз 125879",
-      "price": 1000,
-      "discount": 15,
-      "wight": "10-15шт.",
-      "description": "Пышный красивый букет из красных роз, который поднимет настроение любой женщине. Оформляем букет на заказ.",
-      "isFavorite": true,
-      "isCart": false,
-      "available": true,
-      "stock": 10,
-      "picture": "src\Card\image\1_1595590590.png"
-    },
+    body: 	JSON.stringify(data)
+      // {
+      //   "name": "Букет роз Очарование сердца",
+      //   "price": 1600,
+      //   "discount": 0,
+      //   "wight": "7 шт",
+      //   "description": "Шикарный букет из роз станет прекрасной изюминкой вашего поздравления на торжество любимого человека. Бесплатная доставка до квартиры.",
+      //   // "isFavorite": false,
+      //   // "isCart": false,
+      //   "available": true,
+      //   "stock": 10,
+      //   "pictures": "http://new15955757526555.myaddshop.ru/img/800x0/1068/items/kisspng-flower-bouquet-rose-wedding-cut-flowers-tillandsia-5b418fdb047989-9902541515310233230183_1617369950.png"
+      // }),
   }).then(onResponse); 
 }
+deleteProduct(product_id) {
+  return fetch(`${this._baseUrl}/products/622c77c377d63f6e70967d1d`,{
+    // return fetch(`${this._baseUrl}/posts/63ed299659b98b038f77b679`, {
+    headers: this._headers,
+    method: 'DELETE'
+  }).then(onResponse); 
+}
+getProductById(id) {
+  return fetch(`${this._baseUrl}/products/${id}`,{
+    headers: this._headers,
+  }).then((res) => onResponse(res));
+}
+// getProductByUserId(user_id) {
+//   return fetch(`${this._baseUrl}/products ${user_id}`,{
+//     headers: this._headers,
+//   }).then(onResponse);
+// }
 }
 export const api = new Api(config);
 
@@ -87,4 +107,8 @@ export const searchProducts = (query) => {
     headers: config.headers,
   }).then(onResponse);
 }
-
+ export const getProductById = (id) => {
+  return fetch(`${config.baseUrl}/products/${id}`,{
+    headers: config.headers,
+  }).then(onResponse);
+ }

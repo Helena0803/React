@@ -1,0 +1,30 @@
+.block_main  {
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 0px;
+gap: 20px;
+background: #FFFFFF
+}
+
+
+.h3 {
+width: 250px;
+height: 40px;
+color: #1A1A1A;
+}
+
+.block_main h3 {
+
+font-family: 'Nunito';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 20px; 
+text-align: center;
+}
+
+
+
+
+
