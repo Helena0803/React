@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { getLike } from "../App/utils/utils";
 import { UserContext } from "../context/userContext";
 import { ReactComponent as Like } from "./logoLike.svg";
 import "./style.css";
@@ -15,7 +16,7 @@ export const Card = ({
 }) => {
   const { currentUser } = useContext(UserContext);
 
-  const isLiked = product?.likes?.some((el) => el === currentUser._id);
+  const isLiked = getLike(product, currentUser);
 
   const handleLikeClick = () => {
     onProductLike(product);
@@ -28,7 +29,9 @@ export const Card = ({
       </div>
       <div className="card__sticky card__sticky_type_top-right">
         <button
-          className={`card__favorite ${isLiked ? "card__favorite_active" : ""}`}
+          className={`card__favorite ${
+            isLiked ? "card__favorite_active" : "card__favorite_not_active"
+          }`}
           onClick={handleLikeClick}
         >
           <Like className="card__liked" />

@@ -1,118 +1,116 @@
 import "./style.css";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
-    <div className="footer__container">
-      <div className="inner">
-        <div className="left_menu">
-          <div className="logo_wrapper">
-            <a className="logo" href="/">
-              <img
-                src="http://new15955757526555.myaddshop.ru/img/250x0/1068/logo/bez-imeni-1_15955806957754.png"
-                alt="Версаль"
-              />
+    <div className="footer">
+      <div className="footer__container">
+        <div className="footer__wrapper">
+          <div className="footer__column">
+            <div className="logo_wrapper"></div>
+            {/* <a className="logo" href="/"> */}
+            <img
+              src="http://new15955757526555.myaddshop.ru/img/250x0/1068/logo/bez-imeni-1_15955806957754.png"
+              alt="Версаль"
+            />
+            {/* </a> */}
+
+            <p className="copyright">© 2023 Версаль</p>
+            <div>
+              <a className="policy" href="/politika-konfidencialnosti/">
+                Политика конфиденциальности
+              </a>
+            </div>
+            <a
+              href="/soglasie-na-obrabotku-personalnyh-dannyh/"
+              className="user_agreement_link"
+            >
+              Согласие на обработку персональных данных
             </a>
           </div>
-          <div className="copyright">© 2023 Версаль</div>
-          <a class="policy" href="/politika-konfidencialnosti/">
-            Политика конфиденциальности
-          </a>
-          <a
-            class="user_agreement_link"
-            href="/soglasie-na-obrabotku-personalnyh-dannyh/"
-          >
-            {" "}
-            Согласие на обработку персональных данных
-          </a>
-        </div>
-        <div className="about_shop">
-          <div className="footer_subtitle">О магазине</div>
-          <ul>
-            <li>
-              <a href="/">Главная</a>
-            </li>
-            <li>
-              <a href="/sales/">Акции</a>
-            </li>
-            <li>
-              <a href="/o-kompanii/">О компании</a>
-            </li>
-            <li>
-              <a href="/dostavka-i-oplata/">Доставка и оплата</a>
-            </li>
-            <li>
-              <a href="/kontakty/">Контакты</a>
-            </li>
-            <li>
-              <a href="/news/" className="" title="Новости">
+          <div className="footer__column">
+            <nav className="about_shop_bottom">
+              <a href="/" className="about_shop_bottom_item">
+                О магазине
+              </a>
+              <Link to="/catalog" className="about_shop_bottom_item">
+                Главная
+              </Link>
+              <a href="/sales/" className="about_shop_bottom_item">
+                Акции
+              </a>
+              <a href="/o-kompanii/" className="about_shop_bottom_item">
+                О компании
+              </a>
+              <a href="/dostavka-i-oplata/" className="about_shop_bottom_item">
+                Доставка и оплата
+              </a>
+              <a href="/kontakty/" className="about_shop_bottom_item">
+                Контакты
+              </a>
+              <a href="/news/" className="about_shop_bottom_item">
                 Новости
               </a>
-            </li>
-            <li>
-              <a href="/articles/" className="" title="Статьи">
-                Статьи
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div className="catalog_shop">
-          <div class="footer_subtitle">Каталог</div>
-          <ul>
-            <li>
+              <Link to="/faq" className="about_shop_bottom_item">
+                Часто спрашивают
+              </Link>
+            </nav>
+          </div>
+
+          <div className="footer__column">
+            <nav className="catalog_shop_bottom">
+              <Link to="/catalog" className="catalog_shop_bottom_item">
+                Каталог
+              </Link>
               <a
                 href="/categories/obychnye-bukety/"
-                className=""
-                title="Обычные букеты"
+                className="catalog_shop_bottom_item"
               >
                 Обычные букеты
               </a>
-            </li>
-            <li>
               <a
                 href="/categories/prazdnichnye-bukety/"
-                className=""
-                title="Праздничные букеты"
+                className="catalog_shop_bottom_item"
               >
                 Праздничные букеты
               </a>
-            </li>
-            <li>
               <a
                 href="/categories/svadebnye-bukety/"
-                className=""
-                title="Свадебные букеты"
+                className="catalog_shop_bottom_item"
               >
                 Свадебные букеты
               </a>
-            </li>
-            <li>
-              <a href="/categories/monobukety/" className="" title="Монобукеты">
+              <a
+                href="/categories/monobukety/"
+                className="catalog_shop_bottom_item"
+              >
                 Монобукеты
               </a>
-            </li>
-            <li>
               <a
                 href="/categories/personalnye-bukety/"
-                className=""
-                title="Персональные букеты"
+                className="catalog_shop_bottom_item"
               >
                 Персональные букеты
               </a>
-            </li>
-          </ul>
-        </div>
-        <div className="contacts">
-          <div className="footer_subtitle">Свяжитесь с нами</div>
-          <div className="address">
-            195000, г.Санкт-Петербург, Садовая ул., дом 5 стр. 5
+            </nav>
           </div>
-          <div>
-            <span className="mail_span">E-mail:</span>
-            <a href="mailto:support@versal.com">support@versal.com</a>
+          <div className="footer__column">
+            <nav className="contacts_bottom">
+              <a href="/" className="contacts_bottom_item">
+                Свяжитесь с нами
+              </a>
+              <a href="/" className="contacts_bottom_item">
+                195000, г.Санкт-Петербург, Садовая ул., дом 5 стр. 5
+              </a>
+              <div>
+                <span className="contacts_bottom_item">E-mail:</span>
+                <a href="mailto:support@versal.com">support@versal.com</a>
+              </div>
+              <a className="contacts_bottom_item" href="tel:+78126663311">
+                +7(812)666-33-11
+              </a>
+            </nav>
           </div>
-          <a className="footer_phone" href="tel:+78126663311">
-            +7(812)666-33-11
-          </a>
         </div>
       </div>
     </div>

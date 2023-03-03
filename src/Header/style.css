@@ -17,7 +17,7 @@
   }
   .header__center__menu {
     font-weight: bold;
-    font-family: sans-serif;
+    /* font-family: sans-serif; */
     color: rgb(24, 10, 10);
     display: flex;
     flex-direction: column;
@@ -25,13 +25,37 @@
     gap: 20px;
     cursor: pointer;
     text-decoration: solid;
-  }
+}
 
  .header__right {
     display: flex;
     align-items: stretch;
     gap: 20px;
-  }
+}
+  .favor__card__liked {
+fill: transparent;
+stroke: black;
+stroke-width: 0.5px;
+}
+.header__bable {
+  background-color: rgb(190, 49, 174);
+  color:white;
+  font-size: 11px;
+  width: 19px;
+  height: 14px;
+  border-radius: 30px;
+  position: absolute;
+  left: 60%;
+  bottom: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: .;
+}
+.header__bable-link {
+  text-decoration: none;
+  position: relative;
+}
+
   @media (max-width: 700px) {
     .header__wrapper {
       flex-direction: column;

@@ -5,13 +5,16 @@ import { ReactComponent as Reg } from "./images/login.svg";
 import IconBasket from "../Card/Basket";
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
+import { CardContext } from "../context/cardContext";
+import { Link, useNavigate } from "react-router-dom";
+import { ReactComponent as Like } from "../Card/logoLike.svg";
 
 export const Header = () => {
   const { currentUser, searchQuery, setSearchQuery, parentCounter } =
     useContext(UserContext);
   const [counter, setCounter] = useState(parentCounter);
-
-  console.log({ currentUser });
+  const { favorite } = useContext(CardContext);
+  const navigate = useNavigate();
 
   // const handleClick = () => {
   //   setState((st) => !st);
@@ -26,7 +29,7 @@ export const Header = () => {
       <div className="container">
         <div className="header__wrapper">
           <div className="header__left">
-            <div className="logo">
+            <div className="logo" onClick={() => navigate("/catalog")}>
               <img
                 src="http://new15955757526555.myaddshop.ru/img/250x0/1068/logo/bez-imeni-1_15955806957754.png"
                 alt="Версаль"
@@ -76,6 +79,15 @@ export const Header = () => {
                 title="Вход и регистрация"
               />
               <IconBasket count={counter} />
+            </div>
+            <div className="favor">
+              <Link to={"/favorite"} className="header__bable-link">
+                <Like className="card__liked" />
+                {favorite.length !== 0 && (
+                  <span className="header__bable">{favorite.length}</span>
+                )}
+                {/* {favorite.length} */}
+              </Link>
             </div>
           </div>
           <div>

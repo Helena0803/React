@@ -6,22 +6,26 @@ import { Footer } from "../Footer/Footer";
 import "./App.css";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { api } from "./utils/Api";
-import { useDebounce } from "./utils/utils";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { getLike, useDebounce } from "./utils/utils";
+import { Route, Routes } from "react-router-dom";
 import { ProductPage } from "../pages/ProductPage/ProductPage";
 import { CatalogPage } from "../pages/CatalogPage/CatalogPage";
 import { UserContext } from "../context/userContext";
 import { CardContext } from "../context/cardContext";
-import { PageNotFound } from "../NotFound/notFound";
+import { PageNotFound } from "../pages/NotFound/notFound";
+import { FaqPage } from "../pages/FAQ/FaqPage";
+import { Favorite } from "../pages/Favorite/Favorite";
 
 function App() {
   const [cards, setCards] = useState([]);
   const [searchQuery, setSearchQuery] = useState(undefined);
   const [parentCounter, setParentCounter] = useState(0);
   const [currentUser, setCurrentUser] = useState({});
+  const [favorite, setFavorite] = useState([]);
 
-  const filteredCards = (products, id) =>
-    products.filter((e) => e.author._id === id);
+  const filteredCards = (products, id) => {
+    return products.filter((e) => e.author._id === id);
+  };
 
   const handleSearch = (search) => {
     api
@@ -31,8 +35,7 @@ function App() {
   const debounceValueApp = useDebounce(searchQuery, 500);
 
   function handleProductLike(product) {
-    const isLiked = product.likes.some((el) => el === currentUser._id);
-    console.log("product", product);
+    const isLiked = getLike(product, currentUser);
     isLiked
       ? api.deleteLike(product._id).then((newCard) => {
           const newCards = cards.map((e) =>
@@ -40,6 +43,9 @@ function App() {
           );
           // setCards([...newCards]);
           setCards(filteredCards(newCards, currentUser._id));
+          setFavorite((priority) =>
+            priority.filter((priority) => priority._id !== newCard._id)
+          );
         })
       : api.addLike(product._id).then((newCard) => {
           const newCards = cards.map((e) =>
@@ -47,12 +53,12 @@ function App() {
           );
           // setCards([...newCards]);
           setCards(filteredCards(newCards, currentUser._id));
+          setFavorite((priority) => [...priority, newCard]);
         });
   }
   // const clickMe = async () => {
   //   await api.addNewProduct();
   // };
-
   // const clickMe = async () => {
   //   await api.deleteProduct("63ed335459b98b038f77b67c");
   // };
@@ -67,17 +73,23 @@ function App() {
     handleSearch(searchQuery);
   }, [searchQuery]);
 
-  //Рендер товаров может зависеть от прав пользователя необходимо,чтобы данные приходилиодновременно. Для этого используем Promise.all
+  //Рендер товаров может зависеть от прав пользователя необходимо,чтобы данные приходили одновременно. Для этого используем Promise.all
+  //первонач-ая загрузка карточек и данных юзера
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getProductList()]).then(
       ([userData, productData]) => {
+        //сетим юзера
         setCurrentUser(userData);
-        setCards(filteredCards(productData.products, userData._id));
+        const sorted = filteredCards(productData.products, userData._id);
+        //сетим карточки
+        setCards(sorted);
+        // получаем отлайканные нами карточки
+        const favor = sorted.filter((e) => getLike(e, userData));
+        //сетим их в избранное
+        setFavorite(favor);
       }
     );
   }, []);
-  const navigate = useNavigate();
-  // console.log({ UserContext });
 
   // useEffect(() => {
   //   api.getPostList().then((data) => setCards(data));
@@ -114,7 +126,13 @@ function App() {
     setParentCounter,
     parentCounter,
   };
-  const contextCardValue = { cards, setParentCounter, handleProductLike };
+  const contextCardValue = {
+    cards,
+    setParentCounter,
+    handleProductLike,
+    favorite,
+    setFavorite,
+  };
   return (
     <>
       <UserContext.Provider value={contextValue}>
@@ -152,14 +170,9 @@ function App() {
                 path="/product/:productId"
                 element={<ProductPage />}
               ></Route>
-              <Route
-                path="*"
-                element={<PageNotFound />}
-                // <div>
-                //   404 No found{" "}
-                //   <button onClick={() => navigate("/")}>На главную</button>
-                // </div>
-              ></Route>
+              <Route path="faq" element={<FaqPage />}></Route>
+              <Route path="*" element={<PageNotFound />}></Route>
+              <Route path="favorite" element={<Favorite />}></Route>
             </Routes>
           </main>
           <Footer />

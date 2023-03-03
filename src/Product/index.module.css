@@ -28,7 +28,14 @@
 max-width: 480px;
 }
 
-
+.backtoCatalog{
+	cursor: pointer;
+	text-decoration: none;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 20px;
+	color: rgb(20, 20, 20);
+}
 .desc {
 	max-width: 400px;
 	flex-shrink: 0;

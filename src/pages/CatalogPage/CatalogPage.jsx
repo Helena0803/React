@@ -31,7 +31,7 @@ export const CatalogPage = ({ parentCounter }) => {
           </span>
         ))}
       </div>
-      <CardFlower parentCounter={parentCounter} />
+      <CardFlower cards={cards} parentCounter={parentCounter} />
     </>
   );
 };

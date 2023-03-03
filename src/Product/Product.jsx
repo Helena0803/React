@@ -6,6 +6,7 @@ import { useEffect, useState, useContext } from "react";
 import { api } from "../App/utils/Api";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/userContext";
+import { getLike } from "../App/utils/utils";
 
 export const Product = ({ id }) => {
   const [product, setProduct] = useState({});
@@ -16,12 +17,18 @@ export const Product = ({ id }) => {
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
 
-  const isLiked = product?.likes?.some((el) => el === currentUser._id);
+  const isLiked = getLike(product, currentUser);
 
   return (
     <>
       <div className={s.product}>
         <div className={s.imgWrapper}>
+          <span
+            className={s.backtoCatalog}
+            onClick={() => navigate("/catalog")}
+          >
+            {"< "}Назад
+          </span>
           <img className={s.img} src={product.pictures} alt={`Изображение`} />
           {product.tags?.map((e) => (
             <span className={`tag tag_type_${e}`}>{e}</span>
