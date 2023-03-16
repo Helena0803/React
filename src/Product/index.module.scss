@@ -4,6 +4,7 @@
 	padding-right: 16px;
 	width: 100%;
 	margin: 0 auto;
+	
 }
 
 .product {
@@ -11,6 +12,7 @@
 	margin-top: 23px;
 	gap: 100px;
 	margin-bottom: 40px;
+	padding-top: 10px;
 }
 
 .productTitle {
@@ -36,9 +38,44 @@ max-width: 480px;
 	line-height: 20px;
 	color: rgb(20, 20, 20);
 }
+.rateInfo {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+.review {
+	border-top: 1px solid #ECEFF1;
+	&__author {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	font-weight: 800;
+	font-size: 20px;
+	line-height: 24px;
+	color:#1a1a1a;
+	padding: 1rem 0 0 0;
+}
+&__date {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 20px;
+	color: #7b8e98;
+
+	}
+
+	.text {
+		padding-bottom: 20px;
+		color:#1a1a1a;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+}
 .desc {
 	max-width: 400px;
 	flex-shrink: 0;
+	padding-top: 30px;
 }
 
 .oldPrice {
@@ -170,6 +207,7 @@ max-width: 480px;
 
 .description p {
 	margin-bottom: 12px;
+	padding-top: 30px;
 }
 
 .box {

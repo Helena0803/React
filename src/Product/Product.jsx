@@ -1,4 +1,4 @@
-import s from "./index.module.css";
+import s from "./index.module.scss";
 import truck from "./img/truck.svg";
 import cn from "classnames";
 import { ReactComponent as Save } from "./img/save.svg";
@@ -7,28 +7,74 @@ import { api } from "../App/utils/Api";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/userContext";
 import { getLike } from "../App/utils/utils";
+import { Rating } from "../Rating/Rating";
 
-export const Product = ({ id }) => {
-  const [product, setProduct] = useState({});
-  useEffect(() => {
-    api.getProductById(id).then((data) => setProduct(data));
-  }, [id]);
-
+export const Product = ({ id, product }) => {
+  const [rate, setRate] = useState(3);
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
+  const [currentRating, setCurrentRating] = useState(0);
+  const [reviewsProduct, setReviewsProduct] = useState([
+    product.reviews.slice(0, 5) ?? [],
+  ]);
+  const [users, setUsers] = useState([]);
 
   const isLiked = getLike(product, currentUser);
+  // const [liked, setLiked] = useState(false);
+
+  // useEffect(()=> {
+  //   if (JSON.stringify(product) === '{}') return;
+  //   const isLiked = product?.likes?.some((el) => el === currentUser._id);
+  //   setLiked(isLiked);
+  // },[product]);
+  useEffect(() => {
+    if (!product.reviews) return;
+    const rateAcc = product.reviews.reduce(
+      (acc, el) => (acc = acc + el.rating),
+      0
+    );
+
+    const accum = Math.floor(rateAcc / product.reviews.length);
+    setRate(accum);
+    setCurrentRating(accum);
+  }, [product?.reviews]);
+  console.log({ currentRating });
+
+  useEffect(() => {
+    api.getUsers().then((data) => setUsers(data));
+  }, []);
+  console.log(users);
+  const getUser = (id) => {
+    if (!users.length) return "User";
+    const user = users.find((e) => e._id === id);
+    return user?.name ?? "Us";
+  };
+
+  const options = {
+    date: "numeric",
+    month: "short",
+    year: "numeric",
+  };
 
   return (
     <>
       <div className={s.product}>
         <div className={s.imgWrapper}>
-          <span
-            className={s.backtoCatalog}
-            onClick={() => navigate("/catalog")}
-          >
+          <span className={s.backtoCatalog} onClick={() => navigate(-1)}>
             {"< "}Назад
           </span>
+          <h2>{product.name}</h2>
+          <div className={s.rateInfo}>
+            <span>
+              Art <b>2644554</b>
+            </span>
+            <Rating
+              rate={rate}
+              setRate={setRate}
+              currentRating={currentRating}
+            />
+            <span>{product?.reviews?.length} отзывов</span>
+          </div>
           <img className={s.img} src={product.pictures} alt={`Изображение`} />
           {product.tags?.map((e) => (
             <span className={`tag tag_type_${e}`}>{e}</span>
@@ -90,6 +136,25 @@ export const Product = ({ id }) => {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        {users &&
+          reviewsProduct.map((r) => (
+            <div key={r._id} className={s.review}>
+              <div className={s.review__author}>
+                <div>
+                  <span>{getUser(r.author)}</span>
+                  <span className={s.review__date}>
+                    {new Date(r.created_at).toLocaleString("ru", options)}
+                  </span>
+                </div>
+                <Rating rate={r.rating} isEditable={false} />
+              </div>
+              <div className={s.text}>
+                <span>{r.text}</span>
+              </div>
+            </div>
+          ))}
       </div>
     </>
   );

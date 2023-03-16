@@ -20,7 +20,6 @@ export const Card = ({
 
   const handleLikeClick = () => {
     onProductLike(product);
-    console.log("product");
   };
   return (
     <div className="card">

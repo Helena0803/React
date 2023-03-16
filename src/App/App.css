@@ -29,7 +29,7 @@
     -webkit-box-pack: justify;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding: 20px 20px;
+    padding: 130px 20px 10px;
     margin: 10px;
     display: flex;
     font-family:fantasy;
@@ -40,6 +40,13 @@
 	  border: 1px solid transparent;
     gap: 10px;
 }
+.not__auth {
+  display: flex;
+    flex: 1 0 auto;
+    min-height: 500px;
+    justify-content: center;
+    align-items: center;
+}
 .App-footer {
   height: 194px;
   width: 1440px;
@@ -47,10 +54,7 @@
   top: 1054px;
   border-radius: 0px;
   padding: 40px 224px 40px 224px;
-  justify: space-between;
-  
-  
-
+  justify-content: space-between;
   background: #da1996;
 }
 .App-link {

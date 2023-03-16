@@ -7,11 +7,18 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
 import { CardContext } from "../context/cardContext";
 import { Link, useNavigate } from "react-router-dom";
-import { ReactComponent as Like } from "../Card/logoLike.svg";
+import { ReactComponent as Like } from "../Header/Path.svg";
+import { ReactComponent as Logout } from "./logout.svg";
+import LogoutIcon from "@mui/icons-material/Logout";
 
-export const Header = () => {
-  const { currentUser, searchQuery, setSearchQuery, parentCounter } =
-    useContext(UserContext);
+export const Header = ({ setShowModal }) => {
+  const {
+    currentUser,
+    searchQuery,
+    setSearchQuery,
+    parentCounter,
+    isAuthentificated,
+  } = useContext(UserContext);
   const [counter, setCounter] = useState(parentCounter);
   const { favorite } = useContext(CardContext);
   const navigate = useNavigate();
@@ -23,6 +30,11 @@ export const Header = () => {
     setCounter((st) => st + 1);
     return () => setCounter(parentCounter);
   }, [parentCounter]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <div className="header" id="head">
@@ -39,23 +51,19 @@ export const Header = () => {
           </div>
           <div className="header__center__menu">
             <span>
-              <a href="/ sales /" className="Акции">
+              <a href="/" className="Акции">
                 {" "}
                 Акции{" "}
               </a>
-              <a href="/ o-kompanii /" className="О компании">
+              <a href="/" className="О компании">
                 {" "}
                 О компании{" "}
               </a>
-              <a href="/ dostavka-i-oplata /" className="Доставка и оплата">
+              <a href="/" className="Доставка и оплата">
                 {" "}
                 Доставка и оплата{" "}
               </a>
-              <a href="/ news /" className="Новости">
-                {" "}
-                Новости{" "}
-              </a>
-              <a href="/ kontakty /" className="Контакты">
+              <a href="/" className="Контакты">
                 {" "}
                 Контакты{" "}
               </a>
@@ -65,29 +73,37 @@ export const Header = () => {
             <div className="phone" title="Позвонить">
               <a href="tel:+78126663311">+7(812)666-33-11</a>
             </div>
-            <div>
+            <div className="favor">
+              {/* <div>
               <a href="/basket/"></a>
               <ReactComponent
                 className="basket bar-btn"
                 title="Корзина товаров"
               />
-            </div>
-            <div>
-              <a href="/login/"></a>
-              <Reg
-                className="login_or_reg bar-btn"
-                title="Вход и регистрация"
-              />
+            </div> */}
               <IconBasket count={counter} />
-            </div>
-            <div className="favor">
+
               <Link to={"/favorite"} className="header__bable-link">
                 <Like className="card__liked" />
                 {favorite.length !== 0 && (
                   <span className="header__bable">{favorite.length}</span>
                 )}
-                {/* {favorite.length} */}
               </Link>
+            </div>
+            <div className="login">
+              {isAuthentificated ? (
+                <Link to={"login"} className="login_or_reg bar-btn">
+                  <Reg
+                    className="login_or_reg bar-btn"
+                    title="Вход и регистрация"
+                    onClick={() => setShowModal(true)}
+                  />
+                </Link>
+              ) : (
+                <span>
+                  <LogoutIcon onClick={handleLogout} />
+                </span>
+              )}
             </div>
           </div>
           <div>

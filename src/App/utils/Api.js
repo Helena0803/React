@@ -1,59 +1,85 @@
-const config = {
-  baseUrl:'https://api.react-learning.ru',
-  headers: {
+// const config = {
+//   baseUrl:'https://api.react-learning.ru',
+//   headers: {
+//     'content-type': 'application/json',
+//     // Authorization:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2U4ZWMzNDU5Yjk4YjAzOGY3N2I1MzMiLCJncm91cCI6Imdyb3VwLTEwIiwiaWF0IjoxNjc2MjA5Mjg0LCJleHAiOjE3MDc3NDUyODR9.ajfNfKbFj5QlW92hnw9YuyopigJsUnYshqya9m1ENcA',
+//     // Authorization:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjJmOTk5MmFlNWM0MGMxMGMxMWRmZTQiLCJpYXQiOjE2NDcyODY2ODEsImV4cCI6MTY3ODgyMjY4MX0.WHKXAErKZtY445yXecOFZsx981MuXicJti-okSY-tac',
+//     Authorization: localStorage.getItem("token"),
+//   },
+// };
+const freshHeaders = () => {
+  return {
+    headers: {
     'content-type': 'application/json',
-    Authorization:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2U4ZWMzNDU5Yjk4YjAzOGY3N2I1MzMiLCJncm91cCI6Imdyb3VwLTEwIiwiaWF0IjoxNjc2MjA5Mjg0LCJleHAiOjE3MDc3NDUyODR9.ajfNfKbFj5QlW92hnw9YuyopigJsUnYshqya9m1ENcA',
-    // Authorization:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjJmOTk5MmFlNWM0MGMxMGMxMWRmZTQiLCJpYXQiOjE2NDcyODY2ODEsImV4cCI6MTY3ODgyMjY4MX0.WHKXAErKZtY445yXecOFZsx981MuXicJti-okSY-tac',
-  },
+    Authorization:
+    localStorage.getItem("token"),
+},
+};
 };
 
+const config = {
+    baseUrl:'https://api.react-learning.ru',
+    headers: {
+    'content-type': 'application/json',
+    Authorization:
+    localStorage.getItem("token"),
+    },
+    freshHeaders: freshHeaders,
+  };
 const onResponse = (res) => {
-  return res.ok ? res.json() : Promise.reject('Error')
-}
+  return res.ok ? res.json() : Promise.reject('Error');
+};
 class Api {
-  //сразу деструктурирую
-  constructor({baseUrl, headers}) {
-    this._baseUrl = baseUrl;
-    this._headers = headers;
+  
+  constructor(data) {
+    this._baseUrl = data.baseUrl;
+    this._headers = data.headers;
+    this._freshHeaders = data.freshHeaders;
   }
-getProductList(page = 2) {
+getProductList(page = 1) {
   return fetch(`${this._baseUrl}/products?page=${page}`, {
-    headers: this._headers,
-  }).then(onResponse);
+     ...this._freshHeaders(),
+  }).then((res) => onResponse(res));
 }
 
 getUserInfo() {
   return fetch(`${this._baseUrl}/users/me`,{
-    headers: this._headers,
+ ...this._freshHeaders(),
+  }).then(onResponse);
+}
+
+getUsers() {
+  return fetch(`${this._baseUrl}/users`,{
+ ...this._freshHeaders(),
   }).then(onResponse);
 }
 searchProducts(query) {
   return fetch(`${this._baseUrl}/products/search?query=${query}`,{
-    headers: this._headers,
+    ...this._freshHeaders(),
   }).then(onResponse);
 }
 changeLikeProductsStatus(productId,like) {
   return fetch(`${this._baseUrl}/products/likes/${productId}`,{
-    headers: this._headers,
+    ...this._freshHeaders(),
     method: like ? 'PUT' : 'DELETE'
   }).then(onResponse); 
 }
 
 deleteLike(productId) {
   return fetch(`${this._baseUrl}/products/likes/${productId}`,{
-    headers: this._headers,
+    ...this._freshHeaders(),
     method: 'DELETE'
   }).then(onResponse); 
 }
 addLike(productId) {
   return fetch(`${this._baseUrl}/products/likes/${productId}`,{
-    headers: this._headers,
+    ...this._freshHeaders(),
     method: 'PUT'
   }).then(onResponse); 
 }
 addNewProduct(data) {
   return fetch(`${this._baseUrl}/products`,{
-    headers: this._headers,
+    ...this._freshHeaders(),
     method: 'POST',
     body: 	JSON.stringify(data)
       // {
@@ -73,13 +99,13 @@ addNewProduct(data) {
 deleteProduct(product_id) {
   return fetch(`${this._baseUrl}/products/622c77c377d63f6e70967d1d`,{
     // return fetch(`${this._baseUrl}/posts/63ed299659b98b038f77b679`, {
-    headers: this._headers,
+      ...this._freshHeaders(),
     method: 'DELETE'
   }).then(onResponse); 
 }
 getProductById(id) {
   return fetch(`${this._baseUrl}/products/${id}`,{
-    headers: this._headers,
+    ...this._freshHeaders(),
   }).then((res) => onResponse(res));
 }
 // getProductByUserId(user_id) {
@@ -87,6 +113,7 @@ getProductById(id) {
 //     headers: this._headers,
 //   }).then(onResponse);
 // }
+
 }
 export const api = new Api(config);
 
