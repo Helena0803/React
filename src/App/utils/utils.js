@@ -21,7 +21,8 @@ export const getIssues = (numb) => {
   return debounceValue; 
   }
   //ф-ция для получения отлайканных карточек пользователем
-  export const getLike = (product, currentUser) => product?.likes?.some((e) => e === currentUser._id);
+  export const getLike = (product, currentUser) => {
+  return product?.likes?.some((e) => e === currentUser._id)};
 
 
   

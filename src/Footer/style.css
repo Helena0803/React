@@ -3,6 +3,7 @@ width: 100%;
 padding-top: 40px;
 padding-bottom: 88px;
 height: 194px;
+flex: 0 0 auto;
 }    
 .footer__wrapper {
         display: flex;

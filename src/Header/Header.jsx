@@ -8,33 +8,28 @@ import { UserContext } from "../context/userContext";
 import { CardContext } from "../context/cardContext";
 import { Link, useNavigate } from "react-router-dom";
 import { ReactComponent as Like } from "../Header/Path.svg";
-import { ReactComponent as Logout } from "./logout.svg";
+import { ReactComponent as Logout } from "../Header/logout.svg";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useSelector } from "react-redux";
 
 export const Header = ({ setShowModal }) => {
-  const {
-    currentUser,
-    searchQuery,
-    setSearchQuery,
-    parentCounter,
-    isAuthentificated,
-  } = useContext(UserContext);
+  const { searchQuery, setSearchQuery, parentCounter, isAuthentificated } =
+    useContext(UserContext);
+
   const [counter, setCounter] = useState(parentCounter);
-  const { favorite } = useContext(CardContext);
+  // const { favorite } = useContext(CardContext);
+  const { favorites } = useSelector((s) => s.products);
   const navigate = useNavigate();
 
-  // const handleClick = () => {
-  //   setState((st) => !st);
-  // };
   useEffect(() => {
     setCounter((st) => st + 1);
     return () => setCounter(parentCounter);
   }, [parentCounter]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   navigate("/login");
+  // };
 
   return (
     <div className="header" id="head">
@@ -75,40 +70,44 @@ export const Header = ({ setShowModal }) => {
             </div>
             <div className="favor">
               {/* <div>
-              <a href="/basket/"></a>
-              <ReactComponent
-                className="basket bar-btn"
-                title="Корзина товаров"
-              />
-            </div> */}
+                <a href="/basket/"></a>
+                <ReactComponent
+                  className="basket bar-btn"
+                  title="Корзина товаров"
+                />
+              </div> */}
               <IconBasket count={counter} />
 
-              <Link to={"/favorite"} className="header__bable-link">
+              <Link to={"/favorites"} className="header__bable-link">
                 <Like className="card__liked" />
-                {favorite.length !== 0 && (
-                  <span className="header__bable">{favorite.length}</span>
+                {favorites.length !== 0 && (
+                  <span className="header__bable">{favorites.length}</span>
                 )}
               </Link>
             </div>
             <div className="login">
-              {isAuthentificated ? (
+              {!isAuthentificated ? (
                 <Link to={"login"} className="login_or_reg bar-btn">
-                  <Reg
-                    className="login_or_reg bar-btn"
-                    title="Вход и регистрация"
-                    onClick={() => setShowModal(true)}
-                  />
+                  <Reg>
+                    {" "}
+                    profile // className="login_or_reg bar-btn" // title="Вход и
+                    регистрация" // onClick={() => setShowModal(true)}
+                  </Reg>
+                  {/* Profile */}
                 </Link>
               ) : (
-                <span>
-                  <LogoutIcon onClick={handleLogout} />
-                </span>
+                <Link
+                  to={"/profile"}
+                  className="header__link"
+                  onClick={() => setShowModal(true)}
+                >
+                  <Reg />
+                </Link>
               )}
             </div>
-          </div>
-          <div>
-            <span>{currentUser.name}</span>
-            <span>{currentUser.about}</span>
+            <Link to={"/chart"} className="header__link">
+              Chart
+            </Link>
           </div>
         </div>
       </div>

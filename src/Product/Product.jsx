@@ -8,53 +8,128 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/userContext";
 import { getLike } from "../App/utils/utils";
 import { Rating } from "../Rating/Rating";
+import { Form } from "../Form/Form";
+import { useForm } from "react-hook-form";
+import { CardContext } from "../context/cardContext";
+import { BaseButton } from "../BaseButton/BaseBatton";
+import { ReactComponent as Basket } from "./img/basket.svg";
+import { openNotification } from "../Notification/Notification";
+import { useSelector } from "react-redux";
 
-export const Product = ({ id, product }) => {
+export const Product = ({
+  id,
+  product,
+  reviews,
+  onSendReview,
+  onProductLike,
+  onDeleteReview,
+}) => {
   const [rate, setRate] = useState(3);
   const navigate = useNavigate();
-  const { currentUser } = useContext(UserContext);
   const [currentRating, setCurrentRating] = useState(0);
-  const [reviewsProduct, setReviewsProduct] = useState([
-    product.reviews.slice(0, 5) ?? [],
-  ]);
+  const [reviewsProduct, setReviewsProduct] = useState(reviews?.slice(0, 2));
   const [users, setUsers] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const currentUser = useSelector((s) => s.user.data);
 
-  const isLiked = getLike(product, currentUser);
-  // const [liked, setLiked] = useState(false);
+  // const isLiked = getLike(product, currentUser);
+  const isLiked = product?.likes?.some((e) => e === currentUser._id);
+  const [isLikedProduct, setIsLikedProduct] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ mode: "onSubmit" });
+
+  const sendReview = async (data) => {
+    try {
+      const newProduct = await api.addReview(product._id, {
+        text: data.review,
+        rating: rate,
+      });
+      onSendReview(newProduct);
+      // setReviewsProduct((state) => [...newProduct.reviews]);
+      setShowForm(false);
+      reset();
+      openNotification("success", "Успешно", "Ваш отзыв успешно добавлен");
+    } catch (error) {
+      openNotification("error", "error", "Ваш отзыв не был добавлен");
+    }
+  };
 
   // useEffect(()=> {
   //   if (JSON.stringify(product) === '{}') return;
   //   const isLiked = product?.likes?.some((el) => el === currentUser._id);
   //   setLiked(isLiked);
   // },[product]);
+
+  const options = {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  };
+  const onLike = (e) => {
+    onProductLike(product);
+  };
+
+  const textRegister = register("review", {
+    required: "Review обязателен",
+  });
+
+  const deleteReview = async (id) => {
+    // setReviewsProduct(() => [...res.reviews]);
+    try {
+      const res = await onDeleteReview(id);
+      openNotification("success", "Успешно", "Ваш отзыв удален");
+    } catch (error) {
+      openNotification("error", "Ошибка", "Ваш отзыв не получилось удалить");
+    }
+  };
+
+  const hideReviews = () => {
+    setReviewsProduct(() => [...reviews.slice(0, 2)]);
+  };
+  const showMore = () => {
+    setReviewsProduct((state) => [...reviews.slice(0, state.length + 2)]);
+  };
+  useEffect(() => {
+    setReviewsProduct(() => reviews);
+  }, [reviews]);
+
   useEffect(() => {
     if (!product.reviews) return;
     const rateAcc = product.reviews.reduce(
       (acc, el) => (acc = acc + el.rating),
       0
     );
-
     const accum = Math.floor(rateAcc / product.reviews.length);
     setRate(accum);
     setCurrentRating(accum);
   }, [product?.reviews]);
-  console.log({ currentRating });
+  // console.log({ currentRating });
 
   useEffect(() => {
     api.getUsers().then((data) => setUsers(data));
   }, []);
-  console.log(users);
+  // console.log(users);
   const getUser = (id) => {
     if (!users.length) return "User";
     const user = users.find((e) => e._id === id);
-    return user?.name ?? "Us";
+    if (user?.avatar.includes("default-image")) {
+      return {
+        ...user,
+        avatar:
+          "https://yandex.ru/images/search?p=1&text=love+image&pos=38&rpt=simage&img_url=http%3A%2F%2Frare-gallery.com%2Fuploads%2Fposts%2F104892-love-image-heart-grass-5k.jpg&from=tabbar&lr=2",
+      };
+    }
+    return user;
   };
-
-  const options = {
-    date: "numeric",
-    month: "short",
-    year: "numeric",
-  };
+  useEffect(() => {
+    const isLiked = product?.likes?.some((e) => e === currentUser._id);
+    setIsLikedProduct(isLiked);
+  }, [product.likes, currentUser._id]);
 
   return (
     <>
@@ -68,11 +143,7 @@ export const Product = ({ id, product }) => {
             <span>
               Art <b>2644554</b>
             </span>
-            <Rating
-              rate={rate}
-              setRate={setRate}
-              currentRating={currentRating}
-            />
+            <Rating rate={currentRating} setRate={() => {}} />
             <span>{product?.reviews?.length} отзывов</span>
           </div>
           <img className={s.img} src={product.pictures} alt={`Изображение`} />
@@ -98,9 +169,12 @@ export const Product = ({ id, product }) => {
               В корзину
             </button>
           </div>
-          <button className={cn(s.favorite, { [s.favoriteActive]: isLiked })}>
+          <button
+            className={cn(s.favorite, { [s.favoriteActive]: isLikedProduct })}
+            onClick={(e) => onLike(e)}
+          >
             <Save />
-            <span>{isLiked ? "В избранном" : "В избранное"}</span>
+            <span>{isLikedProduct ? "В избранном" : "В избранное"}</span>
           </button>
           <div className={s.delivery}>
             <img src={truck} alt="truck" />
@@ -137,25 +211,64 @@ export const Product = ({ id, product }) => {
           </div>
         </div>
       </div>
-      <div>
-        {users &&
-          reviewsProduct.map((r) => (
+      <div className={s.review__wrapper}>
+        <button className="btn" onClick={() => setShowForm(true)}>
+          Добавить отзыв
+        </button>
+        {showForm && (
+          <Form
+            className={s.review__form}
+            submitForm={handleSubmit(sendReview)}
+          >
+            <Rating rate={rate} isEditable={true} setRate={setRate} />
+            <span>Оставьте ваш отзыв</span>
+            <textarea
+              placeholder="Ваш отзыв"
+              className={s.review__form__text}
+              {...textRegister}
+            />
+            <BaseButton style={{ width: "200px" }} color={"pink"} type="submit">
+              Отправить отзыв
+            </BaseButton>
+          </Form>
+        )}
+        <div className={s.review__show_more}>
+          <span onClick={showMore}>Еще отзывы</span>
+          <span onClick={hideReviews}>Скрыть отзывы</span>
+        </div>
+      </div>
+      {users &&
+        reviewsProduct
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .map((r) => (
             <div key={r._id} className={s.review}>
               <div className={s.review__author}>
-                <div>
-                  <span>{getUser(r.author)}</span>
+                <div className={s.review__info}>
+                  <img
+                    className={s.review__avatar}
+                    src={getUser(r.author)?.avatar}
+                    alt="avatar"
+                  />
+                  <span>{getUser(r.author)?.name ?? "User"}</span>
                   <span className={s.review__date}>
-                    {new Date(r.created_at).toLocaleString("ru", options)}
+                    {new Date(r.created_at)
+                      .toLocaleString("ru", options)
+                      .slice(0, -2)}
                   </span>
                 </div>
                 <Rating rate={r.rating} isEditable={false} />
               </div>
               <div className={s.text}>
                 <span>{r.text}</span>
+                {currentUser._id === r.author && (
+                  <Basket
+                    onClick={() => deleteReview(r._id)}
+                    className={s.text__img}
+                  />
+                )}
               </div>
             </div>
           ))}
-      </div>
     </>
   );
 };

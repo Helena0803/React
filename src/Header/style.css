@@ -7,12 +7,13 @@
     z-index: 2;
     top: 0;
     left: 0;
+    flex: 0 0 auto;
   }
   .header__wrapper  {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 50px;
+    gap: 30px;
   }
   .header__left  {
     display: flex;
@@ -62,7 +63,9 @@ stroke-width: 0.5px;
   text-decoration: none;
   position: relative;
 }
-
+.header__user {
+  display: block;
+}
   @media (max-width: 700px) {
     .header__wrapper {
       flex-direction: column;

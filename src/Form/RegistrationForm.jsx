@@ -5,7 +5,7 @@ import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { ReactComponent as Eye } from "./eye-regular.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export const RegistrationForm = ({ sendData, flag = true }) => {
+export const RegistrationForm = ({ sendData, flag = true, closeModal }) => {
   const [type, setType] = useState(false);
   const {
     register,
@@ -34,6 +34,9 @@ export const RegistrationForm = ({ sendData, flag = true }) => {
     <>
       <div style={{ padding: "50px" }}>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
+          {/* <div className="form__close" onClick={() => setType(true)}>
+            ×
+          </div> */}
           <h3>Регистрация</h3>
           <input
             type="text"
@@ -65,8 +68,9 @@ export const RegistrationForm = ({ sendData, flag = true }) => {
               placeholder="Пароль"
               className="form__input"
             ></input>
+
             {/* <Eye className="eye" title="show" /> */}
-            {/* <FontAwesomeIcon faEye className="eye" title="hide" /> */}
+            <FontAwesomeIcon faEye className="eye" title="hide" />
             <span className="form__eye" onClick={() => setType(!type)}>
               {type ? "hide" : "show"}
             </span>

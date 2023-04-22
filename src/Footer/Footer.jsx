@@ -1,7 +1,9 @@
+import { memo } from "react";
+import React from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
 
-export const Footer = () => {
+export const Footer = React.memo(() => {
   return (
     <div className="footer">
       <div className="footer__container">
@@ -115,4 +117,4 @@ export const Footer = () => {
       </div>
     </div>
   );
-};
+});

@@ -22,16 +22,24 @@ import { Login } from "../Auth/Login/Login";
 import { Register } from "../Auth/Register/Register";
 import { ResetPass } from "../Auth/ResetPassword/ResetPassword";
 import { parseJwt } from "./utils/parseJWT";
+import { Profile } from "../Profile/Profile";
+import { Chart } from "../Chart/Chart";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../storageToolKit/slices/user/userSlice";
+import { fetchProducts } from "../storageToolKit/products/productSlice";
 
 function App() {
   const [cards, setCards] = useState([]);
   const [searchQuery, setSearchQuery] = useState(undefined);
   const [parentCounter, setParentCounter] = useState(0);
-  const [currentUser, setCurrentUser] = useState({});
-  const [favorite, setFavorite] = useState([]);
-  const [formData, setFormData] = useState([]);
   const [activeModal, setShowModal] = useState(false);
   const [isAuthentificated, setIsAuthentificated] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const currentUser = useSelector((s) => s.user.data);
+  const loadingUser = useSelector((s) => s.user.loading);
+  const { data: products, favorites } = useSelector((s) => s.products);
 
   const filteredCards = (products, id) => {
     return products.filter((e) => e.author._id === id);
@@ -44,28 +52,29 @@ function App() {
   };
   const debounceValueApp = useDebounce(searchQuery, 500);
 
-  function handleProductLike(product) {
-    const isLiked = getLike(product, currentUser);
-    isLiked
-      ? api.deleteLike(product._id).then((newCard) => {
-          const newCards = cards.map((e) =>
-            e._id === newCard._id ? newCard : e
-          );
-          // setCards([...newCards]);
-          setCards(filteredCards(newCards, currentUser._id));
-          setFavorite((priority) =>
-            priority.filter((priority) => priority._id !== newCard._id)
-          );
-        })
-      : api.addLike(product._id).then((newCard) => {
-          const newCards = cards.map((e) =>
-            e._id === newCard._id ? newCard : e
-          );
-          // setCards([...newCards]);
-          setCards(filteredCards(newCards, currentUser._id));
-          setFavorite((priority) => [...priority, newCard]);
-        });
-  }
+  // function handleProductLike(product) {
+  //   const isLiked = getLike(product, currentUser);
+  //   isLiked
+  //     ? api.deleteLike(product._id).then((newCard) => {
+  //         const newCards = cards.map((e) =>
+  //           e._id === newCard._id ? newCard : e
+  //         );
+  //         // setCards([...newCards]);
+  //         setCards(filteredCards(newCards, currentUser._id));
+  //         // setFavorite((priority) =>
+  //         //   priority.filter((priority) => priority._id !== newCard._id)
+  //         // );
+  //       })
+  //     : api.addLike(product._id).then((newCard) => {
+  //         const newCards = cards.map((e) =>
+  //           e._id === newCard._id ? newCard : e
+  //         );
+  //         // setCards([...newCards]);
+  //         setCards(filteredCards(newCards, currentUser._id));
+  //         // setFavorite((priority) => [...priority, newCard]);
+  //       });
+  //   return isLiked;
+  // }
   //use-Effect-ы
 
   useEffect(() => {
@@ -80,24 +89,34 @@ function App() {
 
   //Рендер товаров может зависеть от прав пользователя необходимо,чтобы данные приходили одновременно. Для этого используем Promise.all
   //первонач-ая загрузка карточек и данных юзера
+  // useEffect(() => {
+  //   if (!isAuthentificated) {
+  //     return;
+  //   }
+  //   Promise.all([api.getProductList()]).then(([productData]) => {
+  //     //сетим юзера
+  //     setCurrentUser(userData);
+  //     const sorted = filteredCards(productData.products, currentUser._id);
+  //     //сетим карточки
+  //     setCards([...sorted]);
+  //     // получаем отлайканные нами карточки
+  //     const favor = sorted.filter((e) => getLike(e, currentUser));
+  //     //сетим их в избранное
+  //     setFavorite(favor);
+  //   });
+  // }, [isAuthentificated, currentUser]);
+
   useEffect(() => {
     if (!isAuthentificated) {
       return;
     }
-    Promise.all([api.getUserInfo(), api.getProductList()]).then(
-      ([userData, productData]) => {
-        //сетим юзера
-        setCurrentUser(userData);
-        const sorted = filteredCards(productData.products, userData._id);
-        //сетим карточки
-        setCards([...sorted]);
-        // получаем отлайканные нами карточки
-        const favor = sorted.filter((e) => getLike(e, userData));
-        //сетим их в избранное
-        setFavorite(favor);
-      }
-    );
-  }, [isAuthentificated]);
+    dispatch(fetchUser()).then(() => dispatch(fetchProducts()));
+  }, [dispatch, isAuthentificated]);
+
+  useEffect(() => {
+    setCards(products);
+    // setFavorite(favorites);
+  }, [products, currentUser._id]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -106,7 +125,7 @@ function App() {
     // const authPath = ["/reset-password", "/register"];
     const token = localStorage.getItem("token");
     const uncodedToken = parseJwt(token);
-    console.log({ uncodedToken });
+    // console.log({ uncodedToken });
     if (uncodedToken?._id) {
       setIsAuthentificated(true);
     }
@@ -145,7 +164,6 @@ function App() {
   const sendData = async (data) => {
     // setFormData((s) => [...s, data]);
     const result = await api.registerUser({ ...data, group: "group-10" });
-    console.log({ result });
   };
 
   const contextValue = {
@@ -156,13 +174,12 @@ function App() {
     setParentCounter,
     parentCounter,
     isAuthentificated,
+    setIsAuthentificated,
   };
   const contextCardValue = {
     cards,
     setParentCounter,
-    handleProductLike,
-    favorite,
-    setFavorite,
+    // handleProductLike,
   };
 
   return (
@@ -207,7 +224,9 @@ function App() {
                 ></Route>
                 <Route path="faq" element={<FaqPage />}></Route>
                 <Route path="*" element={<PageNotFound />}></Route>
-                <Route path="favorite" element={<Favorite />}></Route>
+                <Route path="favorites" element={<Favorite />}></Route>
+                <Route path="profile" element={<Profile />}></Route>
+                <Route path="chart" element={<Chart />}></Route>
                 <Route
                   path="login"
                   element={

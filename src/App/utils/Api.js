@@ -48,20 +48,36 @@ getUserInfo() {
   }).then(onResponse);
 }
 
+updateUserInfo(body) {
+  return fetch(`${this._baseUrl}/users/me`,{
+ ...this._freshHeaders(),
+ method:"PATCH",
+ body: JSON.stringify(body),
+  }).then(onResponse);
+}
+
 getUsers() {
   return fetch(`${this._baseUrl}/users`,{
  ...this._freshHeaders(),
   }).then(onResponse);
 }
+updateAvatar(avatar) {
+  return fetch(`${this._baseUrl}/v2/group-10/users/me/avatar`, {
+    ...this._freshHeaders(),
+    method:"PATCH",
+    body: JSON.stringify(avatar),
+  }).then(onResponse);
+}
+
 searchProducts(query) {
   return fetch(`${this._baseUrl}/products/search?query=${query}`,{
     ...this._freshHeaders(),
   }).then(onResponse);
 }
-changeLikeProductsStatus(productId,like) {
+changeLikeProductsStatus(productId,isliked) {
   return fetch(`${this._baseUrl}/products/likes/${productId}`,{
     ...this._freshHeaders(),
-    method: like ? 'PUT' : 'DELETE'
+    method: isliked ? 'DELETE' : 'PUT',
   }).then(onResponse); 
 }
 
@@ -98,7 +114,6 @@ addNewProduct(data) {
 }
 deleteProduct(product_id) {
   return fetch(`${this._baseUrl}/products/622c77c377d63f6e70967d1d`,{
-    // return fetch(`${this._baseUrl}/posts/63ed299659b98b038f77b679`, {
       ...this._freshHeaders(),
     method: 'DELETE'
   }).then(onResponse); 
@@ -108,11 +123,21 @@ getProductById(id) {
     ...this._freshHeaders(),
   }).then((res) => onResponse(res));
 }
-// getProductByUserId(user_id) {
-//   return fetch(`${this._baseUrl}/products ${user_id}`,{
-//     headers: this._headers,
-//   }).then(onResponse);
-// }
+
+addReview(productId, body) {
+  return fetch(`${this._baseUrl}/products/review/${productId}`, {
+    ...this._freshHeaders(),
+    method:"POST",
+    body:JSON.stringify(body)
+  }).then(onResponse);
+}
+deleteReview(productId,reviewId){
+  return fetch(`${this._baseUrl}/products/review/${productId}/${reviewId}`, {
+    ...this._freshHeaders(),
+    method:"DELETE",
+    }).then(onResponse);
+}
+
 
 }
 export const api = new Api(config);

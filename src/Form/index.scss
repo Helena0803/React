@@ -8,6 +8,13 @@
       border-radius: 10px;
       border: 1px solid lightgrey;
     }
+    &__close {
+      font-size: 40px;
+      color: grey;
+      text-align: right;
+      margin-top: -15px;
+      cursor: pointer;
+    }
     &__eye-wrapper {
       position: relative;
     }

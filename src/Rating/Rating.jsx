@@ -1,6 +1,6 @@
 import cn from "classnames";
 import s from "./index.module.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ReactComponent as Rate } from "./Rate.svg";
 
 export const Rating = ({
@@ -23,23 +23,26 @@ export const Rating = ({
     setRate(r);
   };
 
-  const constructRating = (rating) => {
-    const updatedArray = ratingArr.map((ratingEl, index) => (
-      <Rate
-        className={cn(s.rate, {
-          [s.filled]: index < rating,
-          [s.editable]: isEditable,
-        })}
-        onMouseEnter={() => changeDisplay(index + 1)}
-        onMouseLeave={() => changeDisplay(rate)}
-        onClick={() => changeRating(index + 1)}
-      />
-    ));
-    setRatingArr(updatedArray);
-  };
+  const constructRating = useCallback(
+    (rating) => {
+      const updatedArray = ratingArr.map((ratingEl, index) => (
+        <Rate
+          className={cn(s.rate, {
+            [s.filled]: index < rating,
+            [s.editable]: isEditable,
+          })}
+          onMouseEnter={() => changeDisplay(index + 1)}
+          onMouseLeave={() => changeDisplay(rate)}
+          onClick={() => changeRating(index + 1)}
+        />
+      ));
+      setRatingArr(updatedArray);
+    },
+    [isEditable, rate]
+  );
   useEffect(() => {
     constructRating(rate);
-  }, [isEditable]);
+  }, [constructRating]);
 
   return (
     <>

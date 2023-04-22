@@ -20,7 +20,7 @@ class Api {
     return fetch(`${this._baseUrl}/signup`, {
       headers: this._headers,
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, group: "group-10" }), 
     }).then((res) => onResponse(res));
   }
   // авторизация/логин пользователя

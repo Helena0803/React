@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { CardFlower } from "../../CardFlower/CardFlower";
-import { CardContext } from "../../context/cardContext";
 import "./index.css";
+import { useSelector } from "react-redux";
 
 export const Favorite = () => {
-  const { favorite } = useContext(CardContext);
+  const { favorites } = useSelector((s) => s.products);
   const navigate = useNavigate();
 
   return (
@@ -14,8 +14,8 @@ export const Favorite = () => {
         {"< "}Назад
       </span>
       <h1>Избранное</h1>
-      {!!favorite.length ? (
-        <CardFlower cards={favorite} />
+      {!!favorites.length ? (
+        <CardFlower cards={favorites} />
       ) : (
         <div className="block_main">Вы еще ничего не добавили в избранное</div>
       )}

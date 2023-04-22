@@ -4,6 +4,8 @@ import { getLike } from "../App/utils/utils";
 import { UserContext } from "../context/userContext";
 import { ReactComponent as Like } from "./logoLike.svg";
 import "./style.css";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchChangeProductLike } from "../storageToolKit/products/productSlice";
 
 export const Card = ({
   product,
@@ -12,14 +14,15 @@ export const Card = ({
   discount,
   price,
   setParentCounter,
-  onProductLike,
 }) => {
-  const { currentUser } = useContext(UserContext);
+  const currentUser = useSelector((s) => s.user.data);
+  const dispatch = useDispatch();
 
   const isLiked = getLike(product, currentUser);
 
   const handleLikeClick = () => {
-    onProductLike(product);
+    dispatch(fetchChangeProductLike(product));
+    // onProductLike(product);
   };
   return (
     <div className="card">
@@ -35,7 +38,9 @@ export const Card = ({
         >
           <Like className="card__liked" />
           {["new"].map((e) => (
-            <span className="tag tag_type_sale">{e}</span>
+            <span className="tag tag_type_sale" key={e._id}>
+              {e}
+            </span>
           ))}
         </button>
       </div>
