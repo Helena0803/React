@@ -79,14 +79,14 @@ export const Profile = () => {
                 className="auth__input"
                 {...register("email")}
                 disabled
-                defaultvalue={currentUser?.email}
+                defaultValue={currentUser?.email}
                 placeholder="Email"
               />
               <input
                 className="auth__input"
                 {...register("id")}
                 disabled
-                defaultvalue={currentUser?._id}
+                defaultValue={currentUser?._id}
                 placeholder="Id"
               />
               <BaseButton type="submit" color={"pink"}>

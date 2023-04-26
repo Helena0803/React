@@ -140,26 +140,6 @@ function App() {
   //   //   getUserInfo().then((data) => console.log(data));
   //   api.getUserInfo().then((data) => setCurrentUser(data));
   // }, []);
-  const setSortCards = (sort) => {
-    if (sort === "Свадебные") {
-      const newCards = cards.sort((a, b) => a.price - b.price);
-      setCards([...newCards]);
-    }
-    if (sort === "Обычные") {
-      const newCards = cards.sort((a, b) => b.price - a.price);
-      setCards([...newCards]);
-    }
-    if (sort === "Популярные") {
-      const newCards = cards.sort((a, b) => b.likes.length - a.likes.length);
-      setCards([...newCards]);
-    }
-    if (sort === "Новинки") {
-      const newCards = cards.sort(
-        (a, b) => new Date(a.created_at) - new Date(b.created_at)
-      );
-      setCards([...newCards]);
-    }
-  };
 
   const sendData = async (data) => {
     // setFormData((s) => [...s, data]);
@@ -167,7 +147,7 @@ function App() {
   };
 
   const contextValue = {
-    setSort: setSortCards,
+    // setSort: setSortCards,
     currentUser,
     searchQuery,
     setSearchQuery,
@@ -186,7 +166,7 @@ function App() {
     <>
       <UserContext.Provider value={contextValue}>
         <CardContext.Provider value={contextCardValue}>
-          <Header setShowModal={setShowModal} />
+          <Header setShowModal={setShowModal} activeModal={activeModal} />
           {isAuthentificated ? (
             <main className="content container">
               <div className="triggers">

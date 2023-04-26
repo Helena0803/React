@@ -41,6 +41,7 @@ const initialState = {
   total: null,
   loading: false,
   error: null,
+  currentSort: 'Новинки'
 };
 
 const productSlice = createSlice({
@@ -48,7 +49,28 @@ const productSlice = createSlice({
   initialState: initialState,
   reducers: {
     sortedProducts: (state,action) => {
-      console.log({state, action})
+      console.log(state.data, action);
+      switch (action.payload) {
+        case "Свадебные":
+          state.data = state.data.sort((a, b) =>  a?.price - b?.price)
+            break;
+            case "Новинки":
+              state.data = state.data.sort(
+                      (a, b) => new Date(b?.created_at) - new Date(a?.created_at)
+                    );
+                break;
+                case "Популярные":
+                  state.data = state.data.sort(
+                          (a, b) => b.likes.length - a.likes.length
+                        );
+                    break;
+                    case "Обычные":
+                      state.data = state.data.sort((a, b) => b?.price - a?.price);
+                        break;
+                        default:
+                          state.data = state.data.sort((a, b) =>  b?.price - a?.price)
+                        break;
+      }
     }
   },
   extraReducers: (builder) => {
@@ -59,7 +81,7 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         const { total, products, user } = action.payload;
-        state.data = products;
+        state.data = products.filter((e) => e.author._id === user._id);
         state.total = total;
         state.favorites = products.filter((e) => getLike(e, user));
         state.loading = false;
@@ -82,5 +104,30 @@ const productSlice = createSlice({
       
   },
 });
+export const {sortedProducts} = productSlice.actions
 
 export default productSlice.reducer;
+// const setSortCards = (sort) => {
+//   if (sort === "Свадебные") {
+//     const newCards = [...cards].sort((a, b) => {
+//       return a?.price - b?.price;
+//     });
+//     setCards([...newCards]);
+//   }
+//   if (sort === "Обычные") {
+//     const newCards = [...cards].sort((a, b) => b?.price - a?.price);
+//     setCards([...newCards]);
+//   }
+//   if (sort === "Популярные") {
+//     const newCards = [...cards].sort(
+//       (a, b) => b.likes.length - a.likes.length
+//     );
+//     setCards([...newCards]);
+//   }
+//   if (sort === "Новинки") {
+//     const newCards = [...cards].sort(
+//       (a, b) => new Date(a?.created_at) - new Date(b?.created_at)
+//     );
+//     setCards([...newCards]);
+//   }
+// };

@@ -5,18 +5,21 @@ import { ReactComponent as Reg } from "./images/login.svg";
 import IconBasket from "../Card/Basket";
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
-import { CardContext } from "../context/cardContext";
 import { Link, useNavigate } from "react-router-dom";
 import { ReactComponent as Like } from "../Header/Path.svg";
 import { ReactComponent as Logout } from "../Header/logout.svg";
-import LogoutIcon from "@mui/icons-material/Logout";
+import { ReactComponent as AddFlower } from "../Header/images/profile.svg";
+import { ReactComponent as Charts } from "../Header/images/charts.svg";
 import { useSelector } from "react-redux";
+import { Modal } from "../Modal/Modal";
+import { AddProduct } from "../AddProduct/AddProduct";
 
-export const Header = ({ setShowModal }) => {
+export const Header = ({ setShowModal, activeModal }) => {
   const { searchQuery, setSearchQuery, parentCounter, isAuthentificated } =
     useContext(UserContext);
 
   const [counter, setCounter] = useState(parentCounter);
+  const [isCreateModalActive, setCreateModal] = useState(false);
   // const { favorite } = useContext(CardContext);
   const { favorites } = useSelector((s) => s.products);
   const navigate = useNavigate();
@@ -93,7 +96,6 @@ export const Header = ({ setShowModal }) => {
                     profile // className="login_or_reg bar-btn" // title="Вход и
                     регистрация" // onClick={() => setShowModal(true)}
                   </Reg>
-                  {/* Profile */}
                 </Link>
               ) : (
                 <Link
@@ -106,8 +108,17 @@ export const Header = ({ setShowModal }) => {
               )}
             </div>
             <Link to={"/chart"} className="header__link">
-              Chart
+              <Charts />
             </Link>
+            <span onClick={() => setCreateModal(true)}>create</span>
+            {isCreateModalActive && (
+              <Modal
+                activeModal={isCreateModalActive}
+                setShowModal={setCreateModal}
+              >
+                <AddProduct setCreateModal={setCreateModal} />
+              </Modal>
+            )}
           </div>
         </div>
       </div>
