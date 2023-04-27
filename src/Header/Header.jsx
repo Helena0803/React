@@ -1,14 +1,11 @@
 import { Search } from "../Search/Search";
 import "./style.css";
-import { ReactComponent } from "./images/Cart.svg";
 import { ReactComponent as Reg } from "./images/login.svg";
 import IconBasket from "../Card/Basket";
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
 import { Link, useNavigate } from "react-router-dom";
 import { ReactComponent as Like } from "../Header/Path.svg";
-import { ReactComponent as Logout } from "../Header/logout.svg";
-import { ReactComponent as AddFlower } from "../Header/images/profile.svg";
 import { ReactComponent as Charts } from "../Header/images/charts.svg";
 import { useSelector } from "react-redux";
 import { Modal } from "../Modal/Modal";
@@ -20,7 +17,6 @@ export const Header = ({ setShowModal, activeModal }) => {
 
   const [counter, setCounter] = useState(parentCounter);
   const [isCreateModalActive, setCreateModal] = useState(false);
-  // const { favorite } = useContext(CardContext);
   const { favorites } = useSelector((s) => s.products);
   const navigate = useNavigate();
 
@@ -72,13 +68,6 @@ export const Header = ({ setShowModal, activeModal }) => {
               <a href="tel:+78126663311">+7(812)666-33-11</a>
             </div>
             <div className="favor">
-              {/* <div>
-                <a href="/basket/"></a>
-                <ReactComponent
-                  className="basket bar-btn"
-                  title="Корзина товаров"
-                />
-              </div> */}
               <IconBasket count={counter} />
 
               <Link to={"/favorites"} className="header__bable-link">

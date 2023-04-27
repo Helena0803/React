@@ -98,18 +98,6 @@ addNewProduct(data) {
     ...this._freshHeaders(),
     method: 'POST',
     body: 	JSON.stringify(data)
-      // {
-      //   "name": "Букет роз Очарование сердца",
-      //   "price": 1600,
-      //   "discount": 0,
-      //   "wight": "7 шт",
-      //   "description": "Шикарный букет из роз станет прекрасной изюминкой вашего поздравления на торжество любимого человека. Бесплатная доставка до квартиры.",
-      //   // "isFavorite": false,
-      //   // "isCart": false,
-      //   "available": true,
-      //   "stock": 10,
-      //   "pictures": "http://new15955757526555.myaddshop.ru/img/800x0/1068/items/kisspng-flower-bouquet-rose-wedding-cut-flowers-tillandsia-5b418fdb047989-9902541515310233230183_1617369950.png"
-      // }),
   }).then(onResponse); 
 }
 deleteProduct(product_id) {

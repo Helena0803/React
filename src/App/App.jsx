@@ -4,9 +4,9 @@ import truck from "../Product/img/truck.svg";
 import quality from "../Product/img/quality.svg";
 import { Footer } from "../Footer/Footer";
 import "./App.css";
-import { api } from "./utils/Api";
-import { authApi } from "./utils/authApi";
-import { getLike, useDebounce } from "./utils/utils";
+import { api } from "../Utils/Api";
+import { authApi } from "../Utils/authApi";
+import { getLike, useDebounce } from "../Utils/utils";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ProductPage } from "../pages/ProductPage/ProductPage";
 import { CatalogPage } from "../pages/CatalogPage/CatalogPage";
@@ -21,12 +21,15 @@ import { Modal } from "../Modal/Modal";
 import { Login } from "../Auth/Login/Login";
 import { Register } from "../Auth/Register/Register";
 import { ResetPass } from "../Auth/ResetPassword/ResetPassword";
-import { parseJwt } from "./utils/parseJWT";
+import { parseJwt } from "../Utils/parseJWT";
 import { Profile } from "../Profile/Profile";
 import { Chart } from "../Chart/Chart";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "../storageToolKit/slices/user/userSlice";
-import { fetchProducts } from "../storageToolKit/products/productSlice";
+import {
+  fetchProducts,
+  fetchProductsBySearch,
+} from "../storageToolKit/products/productSlice";
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -46,9 +49,12 @@ function App() {
   };
 
   const handleSearch = (search) => {
-    api
-      .searchProducts(search)
-      .then((data) => setCards(filteredCards(data, currentUser._id)));
+    dispatch(fetchProductsBySearch(search)).then((data) =>
+      setCards(filteredCards(data, currentUser._id))
+    );
+    // api
+    //   .searchProducts(search)
+    //   .then((data) => setCards(filteredCards(data, currentUser._id)));
   };
   const debounceValueApp = useDebounce(searchQuery, 500);
 

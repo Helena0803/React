@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { getLike } from "../App/utils/utils";
-import { UserContext } from "../context/userContext";
+import { getLike } from "../Utils/utils";
 import { ReactComponent as Like } from "./logoLike.svg";
+import { ReactComponent as Cart } from "./cart.svg";
 import "./style.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchChangeProductLike } from "../storageToolKit/products/productSlice";
+import { api } from "../Utils/Api";
 
 export const Card = ({
   product,
@@ -23,6 +24,9 @@ export const Card = ({
   const handleLikeClick = () => {
     dispatch(fetchChangeProductLike(product));
     // onProductLike(product);
+  };
+  const deleteCard = async () => {
+    await api.deleteProduct(product._id);
   };
   return (
     <div className="card">
@@ -57,6 +61,9 @@ export const Card = ({
         className="card__card btn btn_type_primary"
       >
         В корзину
+      </span>
+      <span onClick={deleteCard}>
+        <Cart />
       </span>
     </div>
   );

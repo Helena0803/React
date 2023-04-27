@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { authApi } from "../../App/utils/authApi";
-import { pattern } from "../../App/utils/validations";
+import { authApi } from "../../Utils/authApi";
+import { pattern } from "../../Utils/validations";
 import { BaseButton } from "../../BaseButton/BaseBatton";
 import { Form } from "../../Form/Form";
 

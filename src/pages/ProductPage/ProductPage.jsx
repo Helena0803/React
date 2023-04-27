@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { api } from "../../App/utils/Api";
+import { api } from "../../Utils/Api";
 import { CardContext } from "../../context/cardContext";
 import { UserContext } from "../../context/userContext";
 import { Product } from "../../Product/Product";
 import { useDispatch, useSelector } from "react-redux";
-import { getLike } from "../../App/utils/utils";
+import { getLike } from "../../Utils/utils";
 import { fetchChangeProductLike } from "../../storageToolKit/products/productSlice";
 
 export const ProductPage = () => {

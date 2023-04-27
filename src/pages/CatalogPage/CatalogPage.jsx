@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { getIssues } from "../../App/utils/utils";
+import { getIssues } from "../../Utils/utils";
 import { CardFlower } from "../../CardFlower/CardFlower";
 import { CardContext } from "../../context/cardContext";
 import { UserContext } from "../../context/userContext";
@@ -9,7 +9,7 @@ import { sortedProducts } from "../../storageToolKit/products/productSlice";
 
 export const CatalogPage = ({ parentCounter }) => {
   const { cards } = useContext(CardContext);
-  const { searchQuery, setSort } = useContext(UserContext);
+  const { searchQuery } = useContext(UserContext);
   const dispatch = useDispatch();
   const products = useSelector((s) => s.products.data);
 
@@ -21,7 +21,6 @@ export const CatalogPage = ({ parentCounter }) => {
   ];
 
   const handleSort = (target) => {
-    // setSort(target);
     dispatch(sortedProducts(target));
   };
   return (

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { api } from "../../../App/utils/Api";
+import { api } from "../../../Utils/Api";
 import { openNotification } from "../../../Notification/Notification";
 
 

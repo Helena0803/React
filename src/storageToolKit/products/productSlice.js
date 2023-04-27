@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getLike } from "../../App/utils/utils";
+import { getLike } from "../../Utils/utils";
+import { api } from "../../Utils/Api";
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
@@ -11,6 +12,21 @@ export const fetchProducts = createAsyncThunk(
       const { user } = getState();
       const products = await api.getProductList();
       return fulfillWithValue({ ...products, user: user.data });
+    } catch (error) {
+      rejectWithValue(error);
+    }
+  }
+);
+
+export const fetchProductsBySearch = createAsyncThunk(
+  "products/fetchProductsBySearch",
+  async function (
+    search,
+    { extra: api, fulfillWithValue, rejectWithValue }
+  ) {
+    try {
+      const products = await api.searchProducts(search);
+      return fulfillWithValue(products);
     } catch (error) {
       rejectWithValue(error);
     }
@@ -34,14 +50,28 @@ export const fetchChangeProductLike = createAsyncThunk(
     }
   }
 );
+export const addProduct = createAsyncThunk(
+  "products/addProduct",
+  async function (
+    data, { 
+      rejectWithValue, fulfillWithValue }
+  ) {
+    try {
+        const newProduct = await api.addProduct(data);
+      return fulfillWithValue(newProduct)
+    } catch (error) {
+      rejectWithValue(error);
+    }
+  }
+);
 
 const initialState = {
   data: [],
   favorites: [],
-  total: null,
+  total: 0,
   loading: false,
   error: null,
-  currentSort: 'Новинки'
+  currentSort: 'Новинки',
 };
 
 const productSlice = createSlice({
@@ -82,7 +112,7 @@ const productSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         const { total, products, user } = action.payload;
         state.data = products.filter((e) => e.author._id === user._id);
-        state.total = total;
+        state.total = action.payload.total ?? 0;
         state.favorites = products.filter((e) => getLike(e, user));
         state.loading = false;
       })
@@ -101,7 +131,14 @@ const productSlice = createSlice({
           state.favorites = state.favorites.filter(cardFav => cardFav._id !== product._id)
         }
       })
-      
+     .addCase(fetchProductsBySearch.fulfilled, (state, action) =>{
+      state.data = action.payload;
+      state.loading = false;
+     })
+     .addCase(addProduct.fulfilled,(state, action) => {
+      state.data = [...state.data, action.payload];
+      state.loading = false;
+     })
   },
 });
 export const {sortedProducts} = productSlice.actions
