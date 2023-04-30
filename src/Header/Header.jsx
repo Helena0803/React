@@ -10,6 +10,8 @@ import { ReactComponent as Charts } from "../Header/images/charts.svg";
 import { useSelector } from "react-redux";
 import { Modal } from "../Modal/Modal";
 import { AddProduct } from "../AddProduct/AddProduct";
+import { BaseButton } from "../BaseButton/BaseBatton";
+import { Button, FloatButton } from "antd";
 
 export const Header = ({ setShowModal, activeModal }) => {
   const { searchQuery, setSearchQuery, parentCounter, isAuthentificated } =
@@ -97,9 +99,17 @@ export const Header = ({ setShowModal, activeModal }) => {
               )}
             </div>
             <Link to={"/chart"} className="header__link">
-              <Charts />
+              {/* <Charts /> */}
             </Link>
-            <span onClick={() => setCreateModal(true)}>create</span>
+            <span
+              className="btn__add_product"
+              style={{ width: "200px" }}
+              color={"pulm"}
+              type="submit"
+              onClick={() => setCreateModal(true)}
+            >
+              Добавить товар
+            </span>
             {isCreateModalActive && (
               <Modal
                 activeModal={isCreateModalActive}

@@ -66,6 +66,21 @@ stroke-width: 0.5px;
 .header__user {
   display: block;
 }
+.btn__add_product {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 55px;
+
+  padding: 6px 10px;
+  font-weight: 700;
+  font-size: 16px;
+  gap: 10px;
+  border: none;
+  background-color:#f04dff;
+  color: black;
+  cursor: pointer;
+}
   @media (max-width: 700px) {
     .header__wrapper {
       flex-direction: column;
